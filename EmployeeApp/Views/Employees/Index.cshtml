@@ -1,8 +1,25 @@
-﻿
+﻿@model List<EmployeeApp.ViewModels.EmployeeViewModel>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    WebGrid grid = new WebGrid(Model, rowsPerPage: 10);
+
 }
 
-<h2>Index</h2>
+<h2>Employees</h2>
+<hr />
+<div class="row">
+    @grid.GetHtml(
+    tableStyle: "table table-responsive table-striped table-bordered",
+    columns: grid.Columns(
+        grid.Column(header: "First Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="FirstName">@item.FirstName</div></text>),
+grid.Column(header: "Last Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="LastName">@item.LastName</div></text>),
+grid.Column(header: "DateOfBirth", format: @<text><div class="editDate" data-id="@item.ID" data-propertyname="DateOfBirth">@string.Format("{0:dd-MMM-yyyy}", item.DateOfBirth)</div></text>),
+grid.Column(header: "Role Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="RoleID">@item.RoleName</div></text>)
+                         )
+                 )
+</div>
 
+<style>
+    .table td{width:25%;}
+</style>
