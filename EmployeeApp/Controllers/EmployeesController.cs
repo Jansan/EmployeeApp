@@ -1,5 +1,6 @@
 ﻿using EmployeeApp.Models;
 using EmployeeApp.ViewModels;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +41,26 @@ namespace EmployeeApp.Controllers
             var message = "";
 
             //Update data to database
+            using(EmployeeAppEntities ea = new EmployeeAppEntities())
+            {
+                var user = ea.Employees.Find(id);
+                if(user != null)
+                {
+                    ea.Entry(user).Property(propertyName).CurrentValue = value;
+                    ea.SaveChanges();
+                    status = true;
+                }
+                else
+                {
+                    message = "Error!";
+                }
+            }
 
             var response = new { value = value, status = status, message = message };
+            JObject o = JObject.FromObject(response);
+            return Content(o.ToString());
 
-            return View();
+           
         }  
     }
 }

@@ -14,14 +14,16 @@
     columns: grid.Columns(
         grid.Column(header: "First Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="FirstName">@item.FirstName</div></text>),
 grid.Column(header: "Last Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="LastName">@item.LastName</div></text>),
-grid.Column(header: "DateOfBirth", format: @<text><div class="editDate" data-id="@item.ID" data-propertyname="DateOfBirth">@string.Format("{0:dd-MMM-yyyy}", item.DateOfBirth)</div></text>),
-grid.Column(header: "Role Name", format: @<text><div class="edit" data-id="@item.ID" data-propertyname="RoleID">@item.RoleName</div></text>)
-                         )
-                 )
+grid.Column(header: "Date Of Birth", format: @<text><div class="editDate" data-id="@item.ID" data-propertyname="DateOfBirth">@string.Format("{0:dd-MMM-yyyy}", item.DateOfBirth)</div></text>),
+grid.Column(header: "Role Name", format: @<text><div class="editSelect" data-id="@item.ID" data-propertyname="RoleID">@item.RoleName</div></text>)
+)
+)
 </div>
 
 <style>
-    .table td{width:25%;}
+    .table td {
+        width: 25%;
+    }
 </style>
 @section scripts{
     <script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
@@ -40,11 +42,11 @@ grid.Column(header: "Role Name", format: @<text><div class="edit" data-id="@item
                 submitdata: function () {
                     return {
                         id: $(this).data('id'),
-                        propertyName: $(this).data('propertyname')
+                        PropertyName: $(this).data('propertyname')
                     }
                 },
                 callback: function (value, settings) {
-                    var jsonData = $.personJSON(value);
+                    var jsonData = $.parseJSON(value);
                     if (jsonData.status) {
                         $(this).text(jsonData.value);
                     }
@@ -55,5 +57,5 @@ grid.Column(header: "Role Name", format: @<text><div class="edit" data-id="@item
             })
         })
     </script>
-    }
+}
 
