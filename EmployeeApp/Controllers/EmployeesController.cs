@@ -31,5 +31,19 @@ namespace EmployeeApp.Controllers
             }
             return View(list);
         }
+
+        //Save Employee
+        [HttpPost]
+        public ActionResult SaveEmployee(int id, string propertyName, string value)
+        {
+            var status = false;
+            var message = "";
+
+            //Update data to database
+
+            var response = new { value = value, status = status, message = message };
+
+            return View();
+        }  
     }
 }
