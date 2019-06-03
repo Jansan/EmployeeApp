@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -44,9 +45,27 @@ namespace EmployeeApp.Controllers
             using(EmployeeAppEntities ea = new EmployeeAppEntities())
             {
                 var user = ea.Employees.Find(id);
-                if(user != null)
+
+                object updateValue = value;
+                bool isValid = true;
+
+                if (propertyName == "RoleID")
                 {
-                    ea.Entry(user).Property(propertyName).CurrentValue = value;
+                    int newRoleID = 0;
+                    if(int.TryParse(value,out newRoleID))
+                    {
+                        updateValue = newRoleID;
+                        //Update value field
+                        value = ea.EmployeeRoles.Where(e => e.ID == newRoleID).First().RoleName;
+                    }
+                    else
+                    {
+                        isValid = false;
+                    }
+                }
+                if(user != null && isValid)
+                {
+                    ea.Entry(user).Property(propertyName).CurrentValue = updateValue;
                     ea.SaveChanges();
                     status = true;
                 }
@@ -61,6 +80,27 @@ namespace EmployeeApp.Controllers
             return Content(o.ToString());
 
            
-        }  
+        }
+
+        //GET GetEmployeeRoles
+        public ActionResult GetEmployeeRoles(int id)
+        {
+            //{'E':'Letter E','F':'Letter F','G':'Letter G', 'selected':'F'}
+            int selectedRoleID = 0;
+            StringBuilder sb = new StringBuilder();
+            using(EmployeeAppEntities ea = new EmployeeAppEntities())
+            {
+                var roles = ea.EmployeeRoles.OrderBy(e => e.RoleName).ToList();
+                foreach(var item in roles)
+                {
+                    sb.Append(string.Format("'{0}':'{1}',", item.ID, item.RoleName));
+                }
+
+                selectedRoleID = ea.Employees.Where(e => e.ID == id).First().RoleID;
+            }
+
+            sb.Append(string.Format("'selected': '{0}'", selectedRoleID));
+            return Content("{" + sb.ToString() + "}");
+        }
     }
 }
