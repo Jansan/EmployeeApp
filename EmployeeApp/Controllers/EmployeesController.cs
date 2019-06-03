@@ -3,6 +3,7 @@ using EmployeeApp.ViewModels;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -57,6 +58,17 @@ namespace EmployeeApp.Controllers
                         updateValue = newRoleID;
                         //Update value field
                         value = ea.EmployeeRoles.Where(e => e.ID == newRoleID).First().RoleName;
+                    }
+                    else
+                    {
+                        isValid = false;
+                    }
+                }else if(propertyName == "DateOfBirth")
+                {
+                    DateTime dateOfBirth;
+                    if(DateTime.TryParseExact(value,"dd-MM-yyyy",new CultureInfo("en-US"), DateTimeStyles.None, out dateOfBirth))
+                    {
+                        updateValue = dateOfBirth;
                     }
                     else
                     {
